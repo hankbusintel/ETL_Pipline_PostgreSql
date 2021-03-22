@@ -6,6 +6,12 @@ from sql_queries import *
 
 
 def process_song_file(cur, filepath):
+    """
+    Process json song file and insert into postgre SQL.
+    :param cur: postgre sql cursor
+    :param filepath: directory path where stored the song file
+    :return: Void
+    """
     # open song file
     df =pd.read_json(filepath,lines=True)
 
@@ -31,15 +37,27 @@ def date_info_list(date_info):
     """
     - Returns a list with time data that will be used to create a   
       new dataframe
+    :param date_info: Parse in datetime
+    :return: Return a list of attribute populates time table
     """
     return [date_info.strftime('%Y-%m-%d %H:%M:%S'), date_info.hour, date_info.day, \
             date_info.isocalendar()[1], date_info.month, date_info.year, date_info.weekday()]
 
 def date_info(date_info):
+    """
+    - Returns proper date format for func date_info_list to use
+    :param date_info: datetime
+    :return: datetime format output
+    """
     return date_info.strftime('%Y-%m-%d %H:%M:%S')
 
 
 def replaceEmptyInt(value):
+    """
+    - Used to handle when there is a int column with empty value
+    :param value: data of int value column
+    :return: None if it is empty, else return what ever the input.
+    """
     if value == "":
         return None
     else:
@@ -106,6 +124,15 @@ def process_log_file(cur, filepath):
             print (e)
 
 def process_data(cur, conn, filepath, func):
+    """
+    - Loop through source dir, call process_log_file/process_song_file
+    function process each file respectively.
+    :param cur: Postgre SQL cursor.
+    :param conn: Postgre SQL connection.
+    :param filepath: Source dir path.
+    :param func: function wrapper.
+    :return: void
+    """
     # get all files matching extension from directory
     all_files = []
     for root, dirs, files in os.walk(filepath):
